@@ -1,0 +1,560 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model tbl_code_confirmation {
+  id            BigInt    @id @default(autoincrement())
+  email         String    @db.VarChar(128)
+  codigo        String    @db.VarChar(128)
+  activation_id String    @db.VarChar(32)
+  agent         String    @db.VarChar(512)
+  client_ip     String    @db.VarChar(32)
+  isDeleted     Int       @default(0) @db.TinyInt
+  createdBy     BigInt    @default(1)
+  createdDtm    DateTime  @db.DateTime(0)
+  updatedBy     BigInt?
+  updatedDtm    DateTime? @db.DateTime(0)
+}
+
+model tbl_contratos {
+  id_contrato        Int       @id @default(autoincrement())
+  interno            Int
+  nombre_usuario     String    @db.VarChar(100)
+  no_afiliacion      String    @db.VarChar(9)
+  correo_electronico String    @db.VarChar(60)
+  codigo_activacion  String    @db.VarChar(6)
+  estado             String    @default("A") @db.VarChar(1)
+  fecha_alta         DateTime  @default(now()) @db.DateTime(0)
+  usuario_alta       String    @db.VarChar(15)
+  fecha_mod          DateTime? @db.DateTime(0)
+  usuario_mod        String?   @db.VarChar(15)
+}
+
+model tbl_fingerprint {
+  id_maquina    Int       @id
+  no_afiliacion String?   @db.VarChar(11)
+  msg           String?   @db.VarChar(45)
+  fecha_hora    DateTime? @db.DateTime(0)
+  estatus       String?   @db.Char(1)
+}
+
+model tbl_last_login {
+  id          BigInt   @id @default(autoincrement())
+  userId      Int
+  sessionData String   @db.VarChar(2048)
+  machineIp   String   @db.VarChar(1024)
+  userAgent   String   @db.VarChar(128)
+  agentString String   @db.VarChar(1024)
+  platform    String   @db.VarChar(128)
+  createdDtm  DateTime @default(now()) @db.DateTime(0)
+}
+
+model tbl_reset_password {
+  id            BigInt    @id @default(autoincrement())
+  email         String    @db.VarChar(128)
+  activation_id String    @db.VarChar(32)
+  agent         String    @db.VarChar(512)
+  client_ip     String    @db.VarChar(32)
+  isDeleted     Int       @default(0) @db.TinyInt
+  createdBy     BigInt    @default(1)
+  createdDtm    DateTime  @db.DateTime(0)
+  updatedBy     BigInt?
+  updatedDtm    DateTime? @db.DateTime(0)
+}
+
+model tbl_usuarios {
+  id_usuario         Int                 @id @default(autoincrement())
+  no_afiliacion      String              @db.VarChar(9)
+  contrasena         String              @db.VarChar(40)
+  metodo             tbl_usuarios_metodo
+  confirmado         Boolean
+  estado             String              @db.VarChar(1)
+  correo_electronico String?             @db.VarChar(60)
+  fecha_alta         DateTime?           @default(now()) @db.DateTime(0)
+  fecha_mod          DateTime?           @db.DateTime(0)
+  rol                String?             @db.VarChar(15)
+  celular            String?             @db.VarChar(13)
+}
+
+model ISPEA_DIGITAL_usuario_organicas {
+  ID                Int     @id
+  INTERNO           Int
+  ORG0              String  @db.VarChar(2)
+  ORG1              String  @db.VarChar(2)
+  ORG2              String  @db.VarChar(2)
+  ORG3              String  @db.VarChar(2)
+  NOMBRE_DEPEDENCIA String? @db.VarChar(120)
+}
+
+model ISPEA_DIGITAL_usuarios {
+  INTERNO             Int      @id
+  FULLNAME            String   @db.VarChar(120)
+  ORG0                String   @db.VarChar(2)
+  ORG1                String   @db.VarChar(2)
+  ORG2                String   @db.VarChar(2)
+  ORG3                String   @db.VarChar(2)
+  CORREO              String   @db.VarChar(70)
+  PASSWORD            String   @db.VarChar(45)
+  ESTATUS             String   @db.VarChar(1)
+  FECHA_REGISTRO      DateTime @default(now()) @db.DateTime(0)
+  FECHA_ACTUALIZACION String?  @db.VarChar(45)
+}
+
+model tbl_firebase_messaging_tokens {
+  id            Int     @id @default(autoincrement())
+  no_afiliacion String? @unique(map: "no_afiliacion_UNIQUE") @db.VarChar(15)
+  ios           String? @db.VarChar(200)
+  android       String? @db.VarChar(200)
+  web           String? @db.VarChar(200)
+}
+
+model tbl_registro_solicitud {
+  id                   Int       @id @default(autoincrement()) @db.UnsignedInt
+  interno              String?   @db.VarChar(30)
+  afiliacion           String?   @db.VarChar(30)
+  correo               String    @unique(map: "correo") @db.VarChar(150)
+  celular              String    @unique(map: "celular") @db.VarChar(150)
+  identificacion_1_url String    @db.VarChar(200)
+  identificacion_2_url String    @db.VarChar(200)
+  fotografia_url       String    @db.VarChar(200)
+  estatus              String    @db.VarChar(30)
+  observaciones        String?   @db.VarChar(500)
+  fecha_inicio         DateTime  @db.Date
+  fecha_actualizacion  DateTime? @db.Date
+}
+
+model tbl_cuenta_bancaria_solicitud {
+  id                   Int       @id @default(autoincrement())
+  afiliacion           String    @db.VarChar(30)
+  identificacion_1_url String    @db.VarChar(200)
+  identificacion_2_url String    @db.VarChar(200)
+  caratula_url         String    @db.VarChar(200)
+  estatus              String    @db.VarChar(30)
+  observaciones        String    @db.VarChar(500)
+  fecha_inicio         DateTime  @db.Date
+  fecha_actualizacion  DateTime? @db.Date
+  clabe                String?   @db.VarChar(18)
+  selfieUrl            String    @db.VarChar(200)
+}
+
+model asentamientos {
+  idAsentamiento     Int        @id @unique(map: "idAsentamiento_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  codigopostal       Int
+  nombreasentamiento String     @db.VarChar(128)
+  tipoasentamiento   String     @db.VarChar(64)
+  d_CP               String?    @db.VarChar(5)
+  codigoestado       String     @db.VarChar(5)
+  c_oficina          String?    @db.VarChar(5)
+  c_CP               String?    @db.VarChar(255)
+  c_tipo_asenta      String?    @db.VarChar(5)
+  codigomunicipio    String     @db.VarChar(5)
+  id_asenta_cpcons   String?    @db.VarChar(5)
+  tipozona           String?    @db.VarChar(32)
+  codigociudad       Int?       @db.UnsignedInt
+  fkciudad           Int?       @db.UnsignedInt
+  fkmunicipio        Int        @db.UnsignedInt
+  municipios         municipios @relation(fields: [fkmunicipio], references: [idmunicipio], onDelete: NoAction, map: "asentamientos_ibfk_1")
+
+  @@index([codigociudad], map: "codigociudad_index")
+  @@index([codigopostal], map: "codigopostal_index")
+  @@index([fkciudad], map: "fkciudad_index")
+  @@index([fkmunicipio], map: "fkmunicipio_index")
+}
+
+model asistenciaPensionados {
+  ID      Int      @id @unique(map: "INTERNO_UNIQUE") @default(autoincrement())
+  INTERNO String   @db.VarChar(6)
+  FECHA   DateTime @default(now()) @db.DateTime(0)
+}
+
+model bancos {
+  idBanco  Int     @id @unique(map: "idBanco_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  nombre   String  @db.VarChar(128)
+  isActive Boolean
+}
+
+model biometrico {
+  id_biometrico Int     @id @default(autoincrement())
+  foto          String? @db.VarChar(255)
+  firma         String? @db.VarChar(255)
+  huella        String? @db.VarChar(255)
+  iris          String? @db.VarChar(255)
+  cadena_huella String? @db.Text
+  id_tramite    Int?
+}
+
+model bitacora {
+  idBitacora                      Int       @id @default(autoincrement())
+  Actual_nombre                   String?   @db.VarChar(255)
+  Actual_apellidop                String?   @db.VarChar(255)
+  Actual_apellidom                String?   @db.VarChar(255)
+  Actual_aparatoauditivo          Int?      @db.TinyInt
+  Actual_curp                     String?   @db.VarChar(255)
+  Actual_entidadnacimiento        String?   @db.VarChar(255)
+  Actual_genero                   String?   @db.VarChar(255)
+  Actual_lentes                   Int?      @db.TinyInt
+  Actual_ningunadisca             Int?      @db.TinyInt
+  Actual_protesis                 Int?      @db.TinyInt
+  Actual_nacionalidad             String?   @db.VarChar(255)
+  Actual_telefono                 String?   @db.VarChar(255)
+  Actual_tiposangre               String?   @db.VarChar(255)
+  Actual_donador                  String?   @db.VarChar(45)
+  Actual_fechanacimiento          String?   @db.VarChar(45)
+  Actual_contacto_nombre          String?   @db.VarChar(255)
+  Actual_contacto_apellidop       String?   @db.VarChar(255)
+  Actual_contacto_apellidom       String?   @db.VarChar(255)
+  Actual_contacto_direccion       String?   @db.VarChar(255)
+  Actual_contacto_parentesco      String?   @db.VarChar(255)
+  Actual_contacto_telefono        String?   @db.VarChar(255)
+  Actual_contacto_tipotelefono    String?   @db.VarChar(255)
+  Actual_direccion_calle          String?   @db.VarChar(255)
+  Actual_direccion_ciudad         String?   @db.VarChar(255)
+  Actual_direccion_codigopostal   String?   @db.VarChar(255)
+  Actual_direccion_colonia        String?   @db.VarChar(255)
+  Actual_direccion_estado         String?   @db.VarChar(255)
+  Actual_direccion_municipio      String?   @db.VarChar(255)
+  Actual_direccion_numeroexterior String?   @db.VarChar(255)
+  Actual_direccion_numerointerior String?   @db.VarChar(255)
+  Actual_licencia_tipolicencia    String?   @db.VarChar(255)
+  Actual_licencia_vigencia        Int?
+  Actual_tipo_tramite             String?   @db.VarChar(255)
+  Actual_fecha_cita               String?   @db.VarChar(255)
+  Actual_horario_cita             String?   @db.VarChar(255)
+  Nuevo_nombre                    String?   @db.VarChar(255)
+  Nuevo_apellidop                 String?   @db.VarChar(255)
+  Nuevo_apellidom                 String?   @db.VarChar(255)
+  Nuevo_aparatoauditivo           String?   @db.VarChar(255)
+  Nuevo_curp                      String?   @db.VarChar(255)
+  Nuevo_entidadnacimiento         String?   @db.VarChar(255)
+  Nuevo_genero                    String?   @db.VarChar(255)
+  Nuevo_lentes                    Int?      @db.TinyInt
+  Nuevo_ningunadisca              Int?      @db.TinyInt
+  Nuevo_protesis                  Int?      @db.TinyInt
+  Nuevo_nacionalidad              String?   @db.VarChar(255)
+  Nuevo_telefono                  String?   @db.VarChar(255)
+  Nuevo_tiposangre                String?   @db.VarChar(255)
+  Nuevo_donador                   String?   @db.VarChar(255)
+  Nuevo_licencia_fechanacimiento  DateTime? @db.Date
+  Nuevo_contacto_nombre           String?   @db.VarChar(255)
+  Nuevo_contacto_apellidop        String?   @db.VarChar(255)
+  Nuevo_contacto_apellidom        String?   @db.VarChar(255)
+  Nuevo_contacto_direccion        String?   @db.VarChar(255)
+  Nuevo_contacto_parentesco       String?   @db.VarChar(255)
+  Nuevo_contacto_telefono         String?   @db.VarChar(255)
+  Nuevo_contacto_tipotelefono     String?   @db.VarChar(255)
+  Nuevo_direccion_calle           String?   @db.VarChar(255)
+  Nuevo_direccion_ciudad          String?   @db.VarChar(255)
+  Nuevo_direccion_codigopostal    String?   @db.VarChar(255)
+  Nuevo_direccion_colonia         String?   @db.VarChar(255)
+  Nuevo_direccion_estado          String?   @db.VarChar(255)
+  Nuevo_direccion_municipio       String?   @db.VarChar(255)
+  Nuevo_direccion_numeroexterior  String?   @db.VarChar(255)
+  Nuevo_direccion_numerointerior  String?   @db.VarChar(255)
+  Nuevo_licencia_tipolicencia     String?   @db.VarChar(255)
+  Nuevo_licencia_vigencia         Int?
+  Nuevo_tipo_tramite              String?   @db.VarChar(255)
+  Nuevo_fecha_cita                String?   @db.VarChar(255)
+  Nuevo_horario_cita              String?   @db.VarChar(255)
+  Datos_usuario                   String?   @db.VarChar(255)
+  FechaModificacion               String?   @db.VarChar(45)
+}
+
+model cita {
+  ID                  Int      @id @default(autoincrement())
+  INTERNO             Int
+  NOMBRE              String?  @db.VarChar(120)
+  CURP                String?  @db.VarChar(18)
+  DIRECCION           String?  @db.VarChar(300)
+  PENSIONADO_FOTO     Bytes?   @db.Blob
+  PENSIONADO_FIRMA    Bytes?   @db.Blob
+  DIRECTOR_NOMBRE     String?  @db.VarChar(120)
+  DIRECTOR_FIRMA      Bytes?   @db.Blob
+  EMERGENCIA_NOMBRE   String   @db.VarChar(120)
+  EMERGENCIA_TELEFONO String   @db.VarChar(13)
+  EXPEDICION          DateTime @db.Date
+  VENCIMIENTO         DateTime @db.Date
+  ESTATUS             String   @default("A") @db.Char(1)
+}
+
+model citacurso {
+  id                        Int       @id @default(autoincrement())
+  contacto_apellidom        String?   @db.VarChar(255)
+  contacto_apellidop        String?   @db.VarChar(255)
+  contacto_direccion        String?   @db.VarChar(255)
+  contacto_nombre           String?   @db.VarChar(255)
+  contacto_parentesco       String?   @db.VarChar(255)
+  contacto_telefono         String?   @db.VarChar(255)
+  contacto_tipotelefono     String?   @db.VarChar(255)
+  direccion_calle           String?   @db.VarChar(255)
+  direccion_ciudad          String?   @db.VarChar(255)
+  direccion_codigopostal    String?   @db.VarChar(255)
+  direccion_colonia         String?   @db.VarChar(255)
+  direccion_estado          String?   @db.VarChar(255)
+  direccion_municipio       String?   @db.VarChar(255)
+  direccion_numeroexterior  String?   @db.VarChar(255)
+  direccion_numerointerior  String?   @db.VarChar(255)
+  fechanacimiento           DateTime? @db.Date
+  persona_aparatoauditivo   Boolean?
+  persona_apellidom         String?   @db.VarChar(255)
+  persona_apellidop         String?   @db.VarChar(255)
+  persona_curp              String?   @db.VarChar(255)
+  persona_entidadnacimiento String?   @db.VarChar(255)
+  persona_genero            String?   @db.VarChar(255)
+  persona_lentes            Boolean?
+  persona_nacionalidad      String?   @db.VarChar(255)
+  persona_ningunadisca      Boolean?
+  persona_nombre            String?   @db.VarChar(255)
+  persona_protesis          Boolean?
+  persona_telefono          String?   @db.VarChar(255)
+  persona_tiposangre        String?   @db.VarChar(255)
+  fecha_cita                String?   @db.VarChar(255)
+  horario_cita              String?   @db.VarChar(255)
+}
+
+model ciudades {
+  idciudad    Int        @id @db.UnsignedInt
+  codigo      String     @db.VarChar(6)
+  nombre      String     @db.VarChar(255)
+  fkmunicipio Int        @db.UnsignedInt
+  municipios  municipios @relation(fields: [fkmunicipio], references: [idmunicipio], onDelete: NoAction, map: "ciudades_ibfk_1")
+
+  @@index([fkmunicipio], map: "fkmunicipio_idx")
+}
+
+model costolicencia {
+  idCostoLicencia    Int              @id @unique(map: "idcostolicencia_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  costoTotal         Float
+  fkTipoLicencia     Int              @db.UnsignedInt
+  fkVigenciaLicencia Int              @db.UnsignedInt
+  submitDate         DateTime         @db.DateTime(0)
+  lastUpdateDate     DateTime         @db.DateTime(0)
+  isActive           Boolean
+  tipolicencia       tipolicencia     @relation(fields: [fkTipoLicencia], references: [idTipoDeLicencia], onDelete: NoAction, map: "costolicencia_ibfk_1")
+  vigencialicencia   vigencialicencia @relation(fields: [fkVigenciaLicencia], references: [idVigenciaLicencia], onDelete: NoAction, map: "costolicencia_ibfk_2")
+
+  @@index([fkTipoLicencia], map: "fkTipoLicencia_idx")
+  @@index([fkVigenciaLicencia], map: "fkVigenciaLicencia_idx")
+}
+
+model credenciales_pensionados {
+  ID                    Int      @id @default(autoincrement())
+  INTERNO               Int
+  NOMBRE                String   @db.VarChar(72)
+  APELLIDO_PATERNO      String   @db.VarChar(30)
+  APELLIDO_MATERNO      String   @db.VarChar(30)
+  CURP                  String?  @db.VarChar(18)
+  PAIS                  String?  @db.VarChar(50)
+  ESTADO                String?  @db.VarChar(50)
+  MUNICIPIO             String?  @db.VarChar(50)
+  CP                    String?  @db.VarChar(5)
+  COLONIA               String?  @db.VarChar(40)
+  LOCALIDAD             String?  @db.VarChar(40)
+  CALLE_Y_NUM           String?  @db.VarChar(40)
+  PENSIONADO_FOTO       Bytes?
+  PENSIONADO_FIRMA      Bytes?
+  DIRECTOR_NOMBRE       String   @db.VarChar(120)
+  DIRECTOR_FIRMA        Bytes?
+  EMERGENCIA_NOMBRE     String?  @db.VarChar(120)
+  EMERGENCIA_APELLIDO_P String?  @db.VarChar(120)
+  EMERGENCIA_APELLIDO_M String?  @db.VarChar(120)
+  EMERGENCIA_TELEFONO   String?  @db.VarChar(13)
+  EXPEDICION            DateTime @db.Date
+  VENCIMIENTO           DateTime @db.Date
+  URL                   String?  @db.VarChar(80)
+  ESTATUS               String   @default("A") @db.Char(1)
+}
+
+model datotinta {
+  iddatotinta Int      @id @default(autoincrement())
+  frase       String?  @db.VarChar(255)
+  ruta        String?  @db.VarChar(255)
+  tipodoc     String?  @db.VarChar(255)
+  styles      Json?
+  activo      Boolean?
+}
+
+model documento {
+  id        Int      @id @default(autoincrement())
+  foliocita Int?
+  ruta      String?  @db.VarChar(255)
+  tipodoc   String?  @db.VarChar(255)
+  validado  Boolean?
+}
+
+model emisiones {
+  idemision     Int     @id @default(autoincrement())
+  folioLicencia String? @db.VarChar(45)
+  a_o           Int?    @map("año")
+  mes           String? @db.VarChar(45)
+  dia           String? @db.VarChar(45)
+  idusuario     Int?
+}
+
+model estados {
+  idestado   Int          @id @unique(map: "idestado_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  nombre     String       @db.VarChar(45)
+  fkpais     Int          @db.UnsignedInt
+  paises     paises       @relation(fields: [fkpais], references: [idpais], onDelete: NoAction, map: "estados_ibfk_1")
+  municipios municipios[]
+
+  @@index([fkpais], map: "fkpais_idx")
+}
+
+model fechas {
+  fecha      String     @id @db.VarChar(255)
+  status     String?    @db.VarChar(255)
+  n_horarios Int?       @default(8)
+  horarios   horarios[]
+}
+
+model fechascurso {
+  fecha         String          @id @db.VarChar(255)
+  status        String?         @db.VarChar(255)
+  n_horarios    Int?
+  horarioscurso horarioscurso[]
+}
+
+model firmas_imagen {
+  id    Int    @id
+  firma Bytes? @db.MediumBlob
+}
+
+model horarios {
+  idhorario Int     @id @default(autoincrement())
+  horario   Json?
+  fecha     String? @db.VarChar(255)
+  ocupados  Int?    @default(0)
+  fechas    fechas? @relation(fields: [fecha], references: [fecha], map: "horarios_ibfk_1")
+
+  @@index([fecha], map: "FK_HORARIO_FECHA_idx")
+}
+
+model horarioscurso {
+  idhorario   Int          @id @default(autoincrement())
+  fecha       String?      @db.VarChar(255)
+  ocupados    Int?         @default(0)
+  horario     Json?
+  fechascurso fechascurso? @relation(fields: [fecha], references: [fecha], map: "horarioscurso_ibfk_1")
+
+  @@index([fecha], map: "FK_FECHACURSO")
+}
+
+model imagenbanner {
+  idimagenbanner Int      @id @default(autoincrement())
+  ruta           String?  @db.VarChar(100)
+  nombre         String?  @db.VarChar(45)
+  activo         Boolean?
+}
+
+model imagenlogo {
+  idimagenlogo Int      @id @default(autoincrement())
+  ruta         String?  @db.VarChar(100)
+  nombre       String?  @db.VarChar(45)
+  activo       Boolean?
+}
+
+model licencias {
+  idlicencia        Int     @id
+  fecha_emision     String? @db.VarChar(255)
+  fecha_vencimiento String? @db.VarChar(45)
+  baseqr            String? @db.VarChar(400)
+  id_tramite        Int
+
+  @@index([id_tramite], map: "FK_LICENCIA_TRAMITE_idx")
+}
+
+model municipios {
+  idmunicipio   Int             @id @unique(map: "idmunicipio_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  codigo        String          @db.VarChar(6)
+  nombre        String          @db.VarChar(255)
+  fkestado      Int             @db.UnsignedInt
+  asentamientos asentamientos[]
+  ciudades      ciudades[]
+  estados       estados         @relation(fields: [fkestado], references: [idestado], onDelete: NoAction, map: "municipios_ibfk_1")
+
+  @@index([fkestado], map: "fkestado_idx")
+}
+
+model nacionalidades {
+  idnacionalidad Int    @id @unique(map: "idpais_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  nombre         String @db.VarChar(426)
+  clave          String @db.VarChar(425)
+  codigo         Int    @db.UnsignedInt
+}
+
+model paises {
+  idpais  Int       @id @unique(map: "idpais_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  nombre  String    @db.VarChar(425)
+  alfa2   String    @db.VarChar(2)
+  alfa3   String    @db.VarChar(3)
+  iso3166 Int       @db.UnsignedInt
+  estados estados[]
+}
+
+model prueba {
+  idprueba Int     @id @default(autoincrement())
+  nombre   String? @db.VarChar(45)
+}
+
+model tbl_pmp_solicitud {
+  id                  Int       @id @default(autoincrement()) @db.UnsignedInt
+  afiliacion          String    @db.VarChar(30)
+  recibos             Json
+  cotizacion          Json
+  estatus             String    @db.VarChar(30)
+  observaciones       String?   @db.VarChar(500)
+  fecha_inicio        DateTime  @db.Date
+  fecha_actualizacion DateTime? @db.Date
+  tipo_prestamo       Int
+}
+
+model tipolicencia {
+  idTipoDeLicencia Int             @id @unique(map: "idTipoDeLicencia_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  nombre           String          @db.VarChar(45)
+  descripcion      String?         @db.VarChar(255)
+  costolicencia    costolicencia[]
+}
+
+model tipotramite {
+  idTramite   Int     @id @default(autoincrement()) @db.UnsignedInt
+  nombre      String  @db.VarChar(45)
+  descripcion String? @db.VarChar(255)
+}
+
+model usuarios {
+  idUsuario Int     @id @default(autoincrement())
+  usuario   String? @db.VarChar(100)
+  password  String? @db.VarChar(50)
+  rol       String? @db.VarChar(10)
+  status    Int?    @default(1)
+}
+
+model vigencialicencia {
+  idVigenciaLicencia Int             @id @unique(map: "idvigenciaLicencia_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  periodoVigencia    Int             @unique(map: "periodoVigencia_UNIQUE") @db.UnsignedInt
+  costolicencia      costolicencia[]
+}
+
+model tbl_plp_solicitud {
+  id                  Int       @id @default(autoincrement()) @db.UnsignedInt
+  afiliacion          String    @db.VarChar(30)
+  recibos             Json?
+  avaluo              Json?
+  estatus             String    @db.VarChar(30)
+  observaciones       String?   @db.VarChar(500)
+  fecha_inicio        DateTime  @db.Date
+  fecha_actualizacion DateTime? @db.Date
+  tipo_prestamo       Int
+}
+
+enum tbl_usuarios_metodo {
+  texto
+  md5
+  sha1
+  EMPTY_ENUM_VALUE @map("")
+}
