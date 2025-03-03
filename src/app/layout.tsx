@@ -9,7 +9,7 @@ const geistSans = localFont({
 });
 const geistMono = localFont({ src: "./fonts/GeistMonoVF.woff", variable: "--font-geist-mono", weight: "100 900", });
 
-export const metadata: Metadata = { title: "ISSSSPENET", description: "ISSSSPENET", };
+export const metadata: Metadata = { title: "PRUEBAS", description: "PRUEBAS DE ACCIONES", };
 
 export default function RootLayout({ children, }: Readonly<{
   children: React.ReactNode;
