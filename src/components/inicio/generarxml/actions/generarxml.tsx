@@ -61,7 +61,7 @@ export async function generatePaymentXML({ id_company, id_branch, user, pwd, ref
 }
 
 async function sendPaymentRequest(encryptedXML: string, key: string) {
-  var originalString = `xml=<P><pgs><data0>SNDBX123</data0><data>${encryptedXML}</data></pgs></P>`;
+  var originalString = `xml=<pgs><data0>SNDBX123</data0><data>${encryptedXML}</data></pgs>`;
   var data = encodeURIComponent(originalString);
   console.log("data", data)
   var xhr = new XMLHttpRequest();
