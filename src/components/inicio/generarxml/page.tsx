@@ -5,17 +5,17 @@ import { generatePaymentXML, PaymentRequest } from "./actions/generarxml";
 
 export const GenerarXML = () => {
     const paymentData: PaymentRequest = {
-        id_company: "COMP123",
-        id_branch: "BRANCH456",
-        user: "user123",
-        pwd: "pass123",
-        reference: "REF789",
-        amount: 100.5,
+        id_company: "SNBX",
+        id_branch: "01SNBXBRNCH",
+        user: "SNBXUSR0123",
+        pwd: "SECRETO",
+        reference: "FACTURA999",
+        amount: 1.0,
         moneda: "MXN",
-        canal: "WEB",
+        canal: "W",
         omitir_notif_default: true,
-        nb_fpago: "FPAGO123",
-        version: "1.0",
+        nb_fpago: "COD",
+        version: "IntegraWPP",
         ml: "ML123",
         cl: "CL456",
     };
@@ -25,6 +25,12 @@ export const GenerarXML = () => {
         <Card className="w-full bg-white ">
             <Button className="bg-green-500 text-white" onClick={() => {
                 generatePaymentXML(paymentData)
+                    .then((paymentLink) => {
+                        console.log("Liga de cobro generada:", paymentLink);
+                    })
+                    .catch((error) => {
+                        console.error("Error al generar la liga de cobro:", error);
+                    });
             }}>Generar xml</Button>
         </Card>
     )
